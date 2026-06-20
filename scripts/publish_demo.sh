@@ -100,7 +100,10 @@ fi
 
 if [ "${CONFIRM_PUSH:-}" = "yes" ]; then
   git push -u origin main --force
-  echo "Live: https://${OWNER,,}.github.io/$DEMO_REPO/"
+  OWNER_LC=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')
+  echo "Pushed. Enabling Pages..."
+  bash "$PULSE/scripts/enable_demo_pages.sh" 2>/dev/null || true
+  echo "Live (after deploy): https://${OWNER_LC}.github.io/$DEMO_REPO/"
 else
   echo "Review $EXPORT_DIR then:"
   echo "  CONFIRM_PUSH=yes bash $PULSE/scripts/publish_demo.sh"
