@@ -22,6 +22,9 @@
   </style>
 </head>
 <body>
+  <p id="boot-status" style="display:none;margin:0;padding:24px;font-family:system-ui,sans-serif;color:#e2e8f0">
+    Loading Sonaris Pulse…
+  </p>
   <script>
     // Clear stale service workers so GitHub Pages updates are visible immediately.
     if ('serviceWorker' in navigator) {
@@ -29,7 +32,25 @@
         regs.forEach(function (r) { r.unregister(); });
       });
     }
+    (function () {
+      var status = document.getElementById('boot-status');
+      var shown = setTimeout(function () { status.style.display = 'block'; }, 600);
+      var script = document.createElement('script');
+      script.src = 'flutter_bootstrap.js';
+      script.async = true;
+      script.onload = function () {
+        clearTimeout(shown);
+        status.style.display = 'none';
+      };
+      script.onerror = function () {
+        clearTimeout(shown);
+        status.style.display = 'block';
+        status.textContent =
+          'The app did not load. This address is not serving flutter_bootstrap.js. ' +
+          'Open a release build of build/web, not a flutter run -d chrome debug port.';
+      };
+      document.body.appendChild(script);
+    })();
   </script>
-  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
